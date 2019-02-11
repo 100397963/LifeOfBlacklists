@@ -60,7 +60,8 @@ def getContents(url, filePath, category, index):
         testFile = open(filePath + "\\" + str(index) + ".txt", "w+")
         for entry in decodedArray:
             if validEntry(entry):
-                testFile.write(str((entry + ';' + url[0] + ';' + currDay + ';' + category + '\n').encode("utf-8")))
+                testFile.write(str((entry + ';' + url[0] + ';' + currDay + ';' + category)))
+                testFile.write("\n")
         return
     except:
         print("40x http error")
