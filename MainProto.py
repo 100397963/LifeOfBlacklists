@@ -4,8 +4,9 @@
 # Auth : 100397963
 # Version : 1.01
 # Embedded Functionality:
-#   - Extraction of content from a statically defined url
-#   - Saving of content in file
+#   - Extraction of content from a set of defined urls
+#   - Saving of contents in file
+#   - Minor parsing
 #
 ##########################################################
 
@@ -60,8 +61,12 @@ def getContents(url, filePath, category, index):
         testFile = open(filePath + "\\" + str(index) + ".txt", "w+")
         for entry in decodedArray:
             if validEntry(entry):
-                testFile.write(str((entry + ';' + url[0] + ';' + currDay + ';' + category)))
-                testFile.write("\n")
+                # Entry parsing robustness
+                try:
+                    testFile.write(str((entry + ';' + url[0] + ';' + currDay + ';' + category)))
+                    testFile.write("\n")
+                except:
+                    print("Entry parsing error")
         return
     except:
         print("40x http error")
@@ -75,7 +80,7 @@ dirPath = path + 'Outputs'
 if not os.path.isdir(dirPath):
     os.mkdir(dirPath)
 
-dirPath = dirPath + '\\' + datetime.datetime.now().strftime("%Y-%m-%d")
+dirPath = dirPath + '\\' + datetime.datetime.now().strftime("%Y-%m-%d-%H")
 
 if not os.path.isdir(dirPath):
     os.mkdir(dirPath)
