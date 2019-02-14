@@ -14,9 +14,8 @@
 
 import csv
 import os
-import urllib
+import urllib.request
 import datetime
-import time
 
 # Globals
 
@@ -27,7 +26,7 @@ path = os.path.realpath(__file__).split("MainProto")[0]
 
 def importUrls():
 
-    importPath = path + '/Resources/blacklistList.csv'
+    importPath = path + '\Resources\\blacklistList.csv'
     results = []
     with open(importPath) as csvfile:
         reader = csv.reader(csvfile)
@@ -55,11 +54,11 @@ def getContents(url, filePath, category, index):
 
     #404 error protection
     try:
-        contents = urllib.urlopen(url[0]).read()
+        contents = urllib.request.urlopen(url[0]).read()
         decoded = contents.decode("utf-8")
         decodedArray = decoded.split("\n")
 
-        testFile = open(filePath + "/" + str(index) + ".txt", "w+")
+        testFile = open(filePath + "\\" + str(index) + ".txt", "w+")
         for entry in decodedArray:
             if validEntry(entry):
                 # Entry parsing robustness
@@ -81,32 +80,26 @@ dirPath = path + 'Outputs'
 if not os.path.isdir(dirPath):
     os.mkdir(dirPath)
 
-while(1):
+dirPath = dirPath + '\\' + datetime.datetime.now().strftime("%Y-%m-%d-%H")
 
-    dirPath = dirPath + '/' + datetime.datetime.now().strftime("%Y-%m-%d-%H")
+if not os.path.isdir(dirPath):
+    os.mkdir(dirPath)
 
-    if not os.path.isdir(dirPath):
-        os.mkdir(dirPath)
+category = ""
+filePath = ""
+index = 1
 
-    category = ""
-    filePath = ""
-    index = 1
+for entry in url:
 
-    for entry in url:
+    if not entry[1] == category:
+        if not os.path.isdir(dirPath + "\\" + entry[1]):
+            os.mkdir(dirPath + "\\" + entry[1])
+        category = entry[1]
+    filePath = dirPath + "\\" + entry[1]
 
-        if not entry[1] == category:
-            if not os.path.isdir(dirPath + "/" + entry[1]):
-                os.mkdir(dirPath + "/" + entry[1])
-            category = entry[1]
-        filePath = dirPath + "/" + entry[1]
-
-        getContents(entry, filePath, category, index)
-        print(index)
-        index = index + 1
-        
-        time.sleep(60)
-
-
+    getContents(entry, filePath, category, index)
+    print(index)
+    index = index + 1
 
 
 
